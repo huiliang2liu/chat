@@ -33,7 +33,6 @@ public class HxManager implements EMConnectionListener, EMMessageListener {
     private Handler handler = new Handler();
     private List<HxStatusListener> mStatusListeners = new ArrayList<>();
     private Map<String, HxMessageListener> messageListenerMap = new HashMap<>();
-    private Map<String, HxMessageListener> groupMessageListenerMap = new HashMap<>();
     private String mUserName;
 
     public HxManager(Application application) {
@@ -77,17 +76,6 @@ public class HxManager implements EMConnectionListener, EMMessageListener {
         messageListenerMap.remove(name);
     }
 
-    public void registerGroupHxMessageListener(String name, HxMessageListener messageListener) {
-        if (name == null || name.isEmpty() || messageListener == null)
-            return;
-        groupMessageListenerMap.put(name, messageListener);
-    }
-
-    public void unRegisterGroupHxMessageListener(String name, HxMessageListener messageListener) {
-        if (name == null || name.isEmpty() || messageListener == null)
-            return;
-        groupMessageListenerMap.remove(name);
-    }
 
     //连接状态
     @Override
@@ -126,12 +114,18 @@ public class HxManager implements EMConnectionListener, EMMessageListener {
     @Override
     public void onMessageReceived(List<EMMessage> messages) {
         LogUtil.e(TAG, "收到消息");
-        for (EMMessage message:messages){
-            if(message.getChatType()== EMMessage.ChatType.GroupChat){
-
-            }else{
-
+        for (EMMessage message : messages) {
+            String key = "";
+            if (message.getChatType() == EMMessage.ChatType.GroupChat) {
+                key = message.getTo();
+            } else {
+                key = message.getFrom();
             }
+            if (messageListenerMap.containsValue(key)) {
+                HxMessageListener listener = messageListenerMap.get(key);
+                listener.messageReceived(message);
+            }
+
         }
     }
 
@@ -143,15 +137,31 @@ public class HxManager implements EMConnectionListener, EMMessageListener {
     @Override
     public void onMessageRead(List<EMMessage> messages) {
         LogUtil.e(TAG, "收到已读回执");
-        for (EMMessage message : messages)
+        for (EMMessage message : messages) {
             message.setUnread(false);
+            String key;
+            key = message.getTo();
+            if (messageListenerMap.containsKey(key)) {
+                HxMessageListener listener = messageListenerMap.get(key);
+                listener.messageChanged();
+            }
+        }
+
     }
 
     @Override
     public void onMessageDelivered(List<EMMessage> messages) {
         LogUtil.e(TAG, "收到已送达回执");
-        for (EMMessage message : messages)
+        for (EMMessage message : messages) {
             message.setDelivered(true);
+            String key;
+            key = message.getTo();
+            if (messageListenerMap.containsKey(key)) {
+                HxMessageListener listener = messageListenerMap.get(key);
+                listener.messageChanged();
+            }
+        }
+
     }
 
     @Override
@@ -168,6 +178,16 @@ public class HxManager implements EMConnectionListener, EMMessageListener {
     @Override
     public void onMessageChanged(EMMessage message, Object change) {
         LogUtil.e(TAG, "消息状态变动");
+        String key;
+        if (message.getChatType() == EMMessage.ChatType.GroupChat) {
+            key = message.getTo();
+        } else {
+            key = message.getFrom();
+        }
+        if (messageListenerMap.containsKey(key)) {
+            HxMessageListener listener = messageListenerMap.get(key);
+            listener.messageChanged();
+        }
     }
 
     /**
@@ -217,7 +237,6 @@ public class HxManager implements EMConnectionListener, EMMessageListener {
 //        mEmClient.
         mStatusListeners.clear();
         messageListenerMap.clear();
-        groupMessageListenerMap.clear();
     }
 
     public interface HxStatusListener {
