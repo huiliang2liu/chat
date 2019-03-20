@@ -504,6 +504,104 @@ public class HxManager implements EMConnectionListener, EMMessageListener, EMGro
         return message;
     }
 
+    /**
+     * 获取未读消息数量
+     *
+     * @param username
+     * @return
+     */
+    public int getUnreadMsgCount(String username) {
+        EMConversation conversation = mEmClient.chatManager().getConversation(username);
+        if (conversation == null)
+            return 0;
+        return conversation.getUnreadMsgCount();
+    }
+
+
+    /**
+     * 指定会话消息未读数清零
+     *
+     * @param username
+     */
+    public void markAllMessagesAsRead(String username) {
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(username);
+        if (conversation == null)
+            return;
+        conversation.markAllMessagesAsRead();
+    }
+
+    /**
+     * 把一条消息置为已读
+     *
+     * @param username
+     * @param messageId
+     */
+    public void markMessageAsRead(String username, String messageId) {
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(username);
+        if (conversation == null)
+            return;
+        conversation.markMessageAsRead(messageId);
+    }
+
+    /**
+     * 把一条消息置为已读
+     *
+     * @param username
+     * @param message
+     */
+    public void markMessageAsRead(String username, EMMessage message) {
+        markMessageAsRead(username, message.getMsgId());
+    }
+
+    /**
+     * 所有未读消息数清零
+     */
+    public void markAllConversationsAsRead() {
+        mEmClient.chatManager().markAllConversationsAsRead();
+    }
+
+    /**
+     * 删除和某个user会话
+     *
+     * @param username
+     * @param save     是否保留聊天记录
+     */
+    public void deleteConversation(String username, boolean save) {
+        mEmClient.chatManager().deleteConversation(username, save);
+    }
+
+    /**
+     * 删除当前会话的某条聊天记录
+     *
+     * @param username
+     * @param msgId
+     */
+    public void removeMessage(String username, String msgId) {
+        EMConversation conversation = mEmClient.chatManager().getConversation(username);
+        if (conversation == null)
+            return;
+        conversation.removeMessage(msgId);
+    }
+
+    /**
+     * 删除当前会话的某条聊天记录
+     *
+     * @param username
+     * @param message
+     */
+    public void removeMessage(String username, EMMessage message) {
+        removeMessage(username, message.getMsgId());
+    }
+
+    /**
+     * 2019/3/20 15:06
+     * annotation：获取所有会话
+     * author：liuhuiliang
+     * email ：825378291@qq.com
+     */
+    public Map<String, EMConversation> getAllConversations() {
+        return EMClient.getInstance().chatManager().getAllConversations();
+    }
 
     /**
      * 创建群组

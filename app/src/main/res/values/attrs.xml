@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ItemView">
+        <attr name="ItemViewLeftIV" format="reference" />
+        <attr name="ItemViewRightIV" format="reference" />
+        <attr name="ItemViewTV" format="string" />
+    </declare-styleable>
+</resources>

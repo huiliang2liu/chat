@@ -8,9 +8,7 @@ import android.util.Log;
 
 import com.chat.result.activity.ResultCallback;
 import com.chat.result.permission.PermissionCallback;
-import com.tvblack.lamp.lib.utils.IntentUtil;
-import com.tvblack.lamp.lib.utils.result.activity.ResultCallback;
-import com.tvblack.lamp.lib.utils.result.permission.PermissionCallback;
+import com.chat.utils.IntentUtil;
 
 import java.io.File;
 

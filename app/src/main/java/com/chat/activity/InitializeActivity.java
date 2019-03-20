@@ -5,9 +5,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.WindowManager;
 
+import com.chat.R;
+import com.chat.dialog.BaseDialog;
 import com.chat.result.permission.PermissionCallback;
 import com.chat.utils.LogUtil;
 
@@ -34,10 +41,40 @@ public class InitializeActivity extends BaseActivity {
 //            "android.permission.CHANGE_NETWORK_STATE",
 //            "android.permission.WRITE_SETTINGS",
     };
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            startActivity(new Intent(InitializeActivity.this,MainActivity.class));
+            finish();
+        }
+    };
+    private BaseDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dialog = new BaseDialog(this) {
+            @Override
+            protected int layoutId() {
+                return R.layout.dialog_test;
+            }
+
+            @Override
+            protected int width() {
+                return 300;
+            }
+
+            @Override
+            protected int height() {
+                return 400;
+            }
+
+            @Override
+            protected int gravity() {
+                return Gravity.TOP|Gravity.LEFT;
+            }
+        };
         mResult.requestPermissions(0, new PermissionCallback() {
             @Override
             public void result(String... failPermissions) {
@@ -69,5 +106,28 @@ public class InitializeActivity extends BaseActivity {
                 LogUtil.e(TAG, "有修改权限了");
             else
                 LogUtil.e(TAG, "没有修改权限");
+        handler.sendEmptyMessageDelayed(0,5000);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            dialog.show();
+            getWindow().addFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            int resourceId = getResources().getIdentifier(
+                    "status_bar_height", "dimen", "android");
+            int statusBarHeight = getResources()
+                    .getDimensionPixelSize(resourceId);
+            dialog.setXY((int)ev.getX(),(int)ev.getY()-statusBarHeight);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            }, 3000);
+        }
+        super.dispatchTouchEvent(ev);
+        return true;
     }
 }

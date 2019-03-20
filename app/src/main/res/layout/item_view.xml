@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<ImageView
+    android:layout_width="30dp"
+    android:layout_gravity="center_vertical"
+    android:id="@+id/item_view_left"
+    android:layout_marginLeft="20dp"
+    android:src="@mipmap/ic_launcher"
+    android:layout_height="30dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="朋友圈"
+        android:id="@+id/item_view_tv"
+        android:layout_marginLeft="60dp"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:layout_width="15dp"
+        android:src="@mipmap/previous2"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="20dp"
+        android:layout_height="15dp"
+        />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="45dp"
+        android:id="@+id/item_view_right"
+        android:src="@mipmap/ic_launcher"
+        android:layout_height="40dp" />
+</FrameLayout>
