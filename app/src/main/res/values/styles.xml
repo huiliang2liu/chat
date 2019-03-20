@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Light.NoTitleBar">
-
+        <item name="android:typeface">serif</item>
     </style>
 
 </resources>

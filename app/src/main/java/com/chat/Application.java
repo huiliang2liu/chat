@@ -3,6 +3,7 @@ package com.chat;
 import android.os.Build;
 import android.os.Process;
 
+import com.chat.utils.FontsUtils;
 import com.chat.utils.LogUtil;
 
 import java.io.PrintWriter;
@@ -22,6 +23,8 @@ public class Application extends android.app.Application implements Thread.Uncau
     @Override
     public void onCreate() {
         super.onCreate();
+        //设置全局默认字体样式
+        FontsUtils.setDefaultFont(this, "SERIF", "fonts/handwritten.ttf");
         defaultUncaughtExceptionHandler=Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
